@@ -17,7 +17,7 @@ RF-DETR wrapper for ROS 2 C++ implementation.
 ```bash
 mkdir -p ~/ros2_ws/src/
 cd ~/ros2_ws/src/
-git clone https://github.com/Ar-Ray-code/rf_detr_ros_cpp.git -b humble
+git clone https://github.com/Ar-Ray-code/rf_detr_ros_cpp.git
 cd ~/ros2_ws/
 colcon build --packages-up-to rf_detr_ros_cpp --cmake-args -DRF_DETR_USE_OPENVINO=ON
 ```
@@ -37,7 +37,7 @@ source ~/ros2_ws/install/setup.bash
 ros2 launch rf_detr_ros_cpp rf_detr_openvino.launch.py  model_path:=./src/rf_detr_ros_cpp/weights/rf_detr/rf_detr_base_coco.onnx openvino_device:=GPU
 ```
 
-## About
+## References
 
 - [RF-DETR](https://github.com/roboflow/rf-detr) : RF-DETR is a real-time object detection model architecture developed by Roboflow, SOTA on COCO and designed for fine-tuning.
 
