@@ -1,13 +1,15 @@
 # rf_detr_ros_cpp
 RF-DETR wrapper for ROS 2 C++ implementation.
 
+[![ci_jazzy](https://github.com/Ar-Ray-code/rf_detr_ros_cpp/actions/workflows/ci_jazzy.yml/badge.svg)](https://github.com/Ar-Ray-code/rf_detr_ros_cpp/actions/workflows/ci_jazzy.yml)
+
 ## Target device
 
 - Intel CPU, GPU (OpenVINO)
 
 ## Dependencies
 
-- Ubuntu 22.04 with ROS 2 Humble
+- ROS 2 Humble or later
 - OpenVINO 2023.1.0 or later
 
 ## Installation
@@ -37,4 +39,6 @@ ros2 launch rf_detr_ros_cpp rf_detr_openvino.launch.py  model_path:=./src/rf_det
 
 ## About
 
-![RF-DETR](https://github.com/roboflow/rf-detr) : RF-DETR is a real-time object detection model architecture developed by Roboflow, SOTA on COCO and designed for fine-tuning.
+- [RF-DETR](https://github.com/roboflow/rf-detr) : RF-DETR is a real-time object detection model architecture developed by Roboflow, SOTA on COCO and designed for fine-tuning.
+
+- [YOLOX-ROS](https://github.com/Ar-Ray-code/YOLOX-ROS) : YOLOX + ROS2 object detection package (C++ only support). This is a stable package that has been maintained for over four years.
