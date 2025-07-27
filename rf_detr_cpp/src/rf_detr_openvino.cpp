@@ -133,7 +133,7 @@ std::vector<Object> RfDetrOpenVINO::postprocess(const cv::Mat & image)
         obj.rect.y = y1;
         obj.rect.width = x2 - x1;
         obj.rect.height = y2 - y1;
-        obj.label = best_class - 1;          // Convert to 0-indexed (COCO classes 1-80 -> 0-79)
+        obj.label = best_class - 1;
         obj.prob = max_score;
         objects.push_back(obj);
       }

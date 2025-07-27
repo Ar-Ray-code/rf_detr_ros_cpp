@@ -45,9 +45,9 @@ void draw_objects(
 
     char text[256];
     if (obj.label < static_cast<int>(class_names.size())) {
-      sprintf(text, "%s %.1f%%", class_names[obj.label].c_str(), obj.prob * 100);
+      sprintf(text, "%s", class_names[obj.label].c_str());
     } else {
-      sprintf(text, "Class %d %.1f%%", obj.label, obj.prob * 100);
+      sprintf(text, "Class %d", obj.label);
     }
 
     int baseLine = 0;
