@@ -18,7 +18,7 @@ RfDetrOpenVINO::RfDetrOpenVINO(
 
   // Get input shape - handle both static and dynamic shapes
   auto input_partial_shape = model->input().get_partial_shape();
-  
+
   // Check if shape is dynamic
   if (input_partial_shape.is_dynamic()) {
     std::string model_path_str(model_path);
@@ -47,7 +47,7 @@ RfDetrOpenVINO::RfDetrOpenVINO(
       input_w_ = 640;
       is_new_generation_ = false;
     }
-    
+
     // Set input shape for dynamic models
     ov::PartialShape new_shape({1, 3, input_h_, input_w_});
     std::map<std::string, ov::PartialShape> shapes;
@@ -66,14 +66,15 @@ RfDetrOpenVINO::RfDetrOpenVINO(
   infer_request_ = compiled_model_.create_infer_request();
 
   input_tensor_ = infer_request_.get_input_tensor();
-  
+
   // Check number of outputs
   auto output_size = compiled_model_.outputs().size();
   if (output_size >= 2) {
     boxes_tensor_ = infer_request_.get_output_tensor(0);
     scores_tensor_ = infer_request_.get_output_tensor(1);
   } else if (output_size == 1) {
-    std::cout << "Warning: Model has single output, may need different post-processing" << std::endl;
+    std::cout << "Warning: Model has single output, may need different post-processing" <<
+      std::endl;
     boxes_tensor_ = infer_request_.get_output_tensor(0);
     scores_tensor_ = infer_request_.get_output_tensor(0);
   } else {
@@ -95,10 +96,10 @@ std::vector<Object> RfDetrOpenVINO::inference(const cv::Mat & frame)
 void RfDetrOpenVINO::preprocess(const cv::Mat & image)
 {
   cv::Mat resized_image;
-  
+
   if (is_new_generation_) {
     cv::resize(image, resized_image, cv::Size(input_w_, input_h_));
-    
+
     // Scale is direct resize for new models
     scale_ = std::min(
       static_cast<float>(input_w_) / static_cast<float>(image.cols),
@@ -106,7 +107,7 @@ void RfDetrOpenVINO::preprocess(const cv::Mat & image)
   } else {
     // Legacy models use letterboxing with padding
     resized_image = this->static_resize(image);
-    
+
     scale_ = std::min(
       static_cast<float>(input_w_) / static_cast<float>(image.cols),
       static_cast<float>(input_h_) / static_cast<float>(image.rows));
@@ -128,11 +129,11 @@ std::vector<Object> RfDetrOpenVINO::postprocess(const cv::Mat & image)
   try {
     boxes_shape = boxes_tensor_.get_shape();
     scores_shape = scores_tensor_.get_shape();
-  } catch (const std::exception& e) {
+  } catch (const std::exception & e) {
     std::cerr << "Error getting tensor shapes: " << e.what() << std::endl;
     return objects;
   }
-  
+
   // Handle case where both tensors point to the same output (single output model)
   bool single_output = (boxes_tensor_.data<float>() == scores_tensor_.data<float>());
 
@@ -140,14 +141,14 @@ std::vector<Object> RfDetrOpenVINO::postprocess(const cv::Mat & image)
   std::cout << "Boxes shape: [";
   for (size_t i = 0; i < boxes_shape.size(); ++i) {
     std::cout << boxes_shape[i];
-    if (i < boxes_shape.size() - 1) std::cout << ", ";
+    if (i < boxes_shape.size() - 1) {std::cout << ", ";}
   }
   std::cout << "]" << std::endl;
-  
+
   std::cout << "Scores shape: [";
   for (size_t i = 0; i < scores_shape.size(); ++i) {
     std::cout << scores_shape[i];
-    if (i < scores_shape.size() - 1) std::cout << ", ";
+    if (i < scores_shape.size() - 1) {std::cout << ", ";}
   }
   std::cout << "]" << std::endl;
 
@@ -181,20 +182,20 @@ std::vector<Object> RfDetrOpenVINO::postprocess(const cv::Mat & image)
     // For COCO, class 0 might be background, so we check best_class > 0
     if (max_score > bbox_conf_thresh_ && best_class > 0 && best_class < 91) {
       float x1, y1, x2, y2;
-      
+
       if (is_new_generation_) {
         // New generation models: coordinates are normalized [0,1] like legacy models
         float cx_norm = box[0];  // center x (normalized)
-        float cy_norm = box[1];  // center y (normalized)  
+        float cy_norm = box[1];  // center y (normalized)
         float w_norm = box[2];   // width (normalized)
         float h_norm = box[3];   // height (normalized)
-        
+
         // Convert cxcywh to xyxy format (normalized)
         float x1_norm = cx_norm - 0.5f * w_norm;
         float y1_norm = cy_norm - 0.5f * h_norm;
         float x2_norm = cx_norm + 0.5f * w_norm;
         float y2_norm = cy_norm + 0.5f * h_norm;
-        
+
         // Scale directly to original image size (no letterboxing for new models)
         x1 = x1_norm * static_cast<float>(image.cols);
         y1 = y1_norm * static_cast<float>(image.rows);
