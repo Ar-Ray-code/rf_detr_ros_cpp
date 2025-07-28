@@ -27,10 +27,11 @@ private:
   ov::CompiledModel compiled_model_;
   ov::InferRequest infer_request_;
   ov::Tensor input_tensor_;
-  ov::Tensor boxes_tensor_;    // Output 0: bounding boxes
-  ov::Tensor scores_tensor_;   // Output 1: class scores
+  ov::Tensor boxes_tensor_;
+  ov::Tensor scores_tensor_;
 
   float scale_;
+  bool is_new_generation_;
 
   void preprocess(const cv::Mat & image);
   std::vector<Object> postprocess(const cv::Mat & image);
