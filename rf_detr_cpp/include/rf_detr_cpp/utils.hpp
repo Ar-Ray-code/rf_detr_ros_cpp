@@ -71,6 +71,22 @@ void draw_objects(
       cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255));
   }
 }
+
+inline float fastExp(const float x)
+{
+  union
+  {
+    uint32_t i;
+    float f;
+  } v{};
+  v.i = (1 << 23) * (1.4426950409 * x + 126.93490512f);
+  return v.f;
+}
+
+inline float sigmoid(const float x)
+{
+  return 1.0f / (1.0f + fastExp(-x));
+}
 }
 }
 
