@@ -1,4 +1,5 @@
 #include "rf_detr_cpp/rf_detr_openvino.hpp"
+#include "rf_detr_cpp/utils.hpp"
 
 #ifdef ENABLE_OPENVINO
 
@@ -171,8 +172,9 @@ std::vector<Object> RfDetrOpenVINO::postprocess(const cv::Mat & image)
     float max_score = 0.0f;
 
     for (size_t j = 0; j < num_classes; ++j) {
-      if (class_scores[j] > max_score) {
-        max_score = class_scores[j];
+      const float score = utils::sigmoid(class_scores[j]);
+      if (score > max_score) {
+        max_score = score;
         best_class = static_cast<int>(j);
       }
     }
